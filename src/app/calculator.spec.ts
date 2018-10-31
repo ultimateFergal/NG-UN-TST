@@ -2,11 +2,17 @@ import { Calculator } from './calculator';
 
 describe('Test for Calculator', () => {
 
-    describe('Test for multiply', () => {
+    let calculator;
+    //Arrange
+    beforeEach(()=>{
+      calculator = new Calculator();
+    });
 
+    // fdescribe('Test for multiply', () => { // Corre solo las pruebas que tenga la f, fdescribe o fit, (focus)
+        describe('Test for multiply', () => {
         it("it should return nine", () =>{
             // Arrange
-            let calculator = new Calculator();
+            // let calculator = new Calculator(); // Se hace en el beforeEach
 
             // Act
             let result = calculator.multiply(3,3);
@@ -17,7 +23,7 @@ describe('Test for Calculator', () => {
 
         it("it should return four", () =>{
             // Arrange
-            let calculator = new Calculator();
+            // let calculator = new Calculator(); // Se hace en el beforeEach
 
             // Act
             let result = calculator.multiply(1,4);
@@ -29,9 +35,9 @@ describe('Test for Calculator', () => {
 
     describe('Test for divide', () => {
 
-        it("it should divide for a numner", () =>{
+        it("it should divide for a number", () =>{
             // Arrange
-            let calculator = new Calculator();
+            // let calculator = new Calculator(); // Se hace en el beforeEach
             // Act & Assert
             expect(calculator.divide(6,3)).toEqual(2);
             expect(calculator.divide(5,2)).toEqual(2.5);
@@ -39,7 +45,7 @@ describe('Test for Calculator', () => {
 
         it("it should divide for zero", () =>{
             // Arrange
-            let calculator = new Calculator();
+            // let calculator = new Calculator(); // Se hace en el beforeEach
             // Act & Assert
             expect(calculator.divide(6,0)).toBeNull();
             expect(calculator.divide(5,0)).toBeNull();
