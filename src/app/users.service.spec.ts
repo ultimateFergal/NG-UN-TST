@@ -4,21 +4,24 @@ import {
   ConnectionBackend,
   BaseRequestOptions,
   Response,
-  ResponseOptions
+  ResponseOptions,
+  RequestMethod
 } from '@angular/http';
-import { UsersService } from './users.service';
 import { MockBackend } from '@angular/http/testing';
 
+import { UsersService } from './users.service';
+
 describe('UsersService', () => {
-  // Arrange
+  //Arrange
   // beforeEach(() => TestBed.configureTestingModule({}));
   beforeEach(() => {
-    TestBed.configureTestingModule({ // Se crea área de prueba para interceptar peticiones http
+    TestBed.configureTestingModule({
+      // Se crea área de prueba para interceptar peticiones http
       providers: [
         BaseRequestOptions,
         MockBackend,
         UsersService,
-        {
+        { 
           provide: Http,
           deps: [MockBackend, BaseRequestOptions],
           useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
@@ -30,23 +33,229 @@ describe('UsersService', () => {
   });
 
   /*   it('should be created', () => {
-      const service: UsersService = TestBed.get(UsersService);
-      expect(service).toBeTruthy();
-    }); */
+        const service: UsersService = TestBed.get(UsersService);
+	      expect(service).toBeTruthy();
+	    }); */
 
   it('should be created', inject([UsersService], (service: UsersService) => {
     expect(service).toBeTruthy();
   }));
 
+  describe('test for getAllUsers', ()=>{
 
-  describe('Test for getUser', () => {
+    it("should return the all users",
+      inject([UsersService, MockBackend], fakeAsync((usersService, mockBackend)=>{
+
+        //Arrange
+        let dataResponse, dataUrl, dataMethod, dataToken;
+        let userMock = [
+          {
+            "id": 1,
+            "name": "Leanne Graham",
+            "username": "Bret",
+            "email": "Sincere@april.biz",
+            "address": {
+              "street": "Kulas Light",
+              "suite": "Apt. 556",
+              "city": "Gwenborough",
+              "zipcode": "92998-3874",
+              "geo": {
+                "lat": "-37.3159",
+                "lng": "81.1496"
+              }
+            },
+            "phone": "1-770-736-8031 x56442",
+            "website": "hildegard.org",
+            "company": {
+              "name": "Romaguera-Crona",
+              "catchPhrase": "Multi-layered client-server neural-net",
+              "bs": "harness real-time e-markets"
+            }
+          },
+          {
+            "id": 2,
+            "name": "Ervin Howell",
+            "username": "Antonette",
+            "email": "Shanna@melissa.tv",
+            "address": {
+              "street": "Victor Plains",
+              "suite": "Suite 879",
+              "city": "Wisokyburgh",
+              "zipcode": "90566-7771",
+              "geo": {
+                "lat": "-43.9509",
+                "lng": "-34.4618"
+              }
+            },
+            "phone": "010-692-6593 x09125",
+            "website": "anastasia.net",
+            "company": {
+              "name": "Deckow-Crist",
+              "catchPhrase": "Proactive didactic contingency",
+              "bs": "synergize scalable supply-chains"
+            }
+          },
+          {
+            "id": 3,
+            "name": "Clementine Bauch",
+            "username": "Samantha",
+            "email": "Nathan@yesenia.net",
+            "address": {
+              "street": "Douglas Extension",
+              "suite": "Suite 847",
+              "city": "McKenziehaven",
+              "zipcode": "59590-4157",
+              "geo": {
+                "lat": "-68.6102",
+                "lng": "-47.0653"
+              }
+            },
+            "phone": "1-463-123-4447",
+            "website": "ramiro.info",
+            "company": {
+              "name": "Romaguera-Jacobson",
+              "catchPhrase": "Face to face bifurcated interface",
+              "bs": "e-enable strategic applications"
+            }
+          },
+        ]
+        let mockResponse = new ResponseOptions({body: JSON.stringify(userMock)});
+        mockBackend.connections.subscribe(connection =>{
+          dataUrl = connection.request.url;
+          dataMethod = connection.request.method;
+          dataToken = connection.request.headers.get('API-TOKEN');
+          connection.mockRespond(new Response(mockResponse));
+        });
+
+        //Act
+        usersService.getAllUsers()
+        .subscribe(response =>{
+          dataResponse = response;
+        });
+        tick();
+        //Assert
+        expect(dataResponse.length).toEqual(3);
+        expect(dataUrl).toEqual('http://jsonplaceholder.typicode.com/users');
+        expect(dataMethod).toBe(RequestMethod.Get);
+        expect(dataToken === null).toBeFalsy();
+
+      }))
+    );
+
+
+    it("should return all users when the server fail",
+      inject([UsersService, MockBackend], fakeAsync((usersService, mockBackend: MockBackend)=>{
+
+        //Arrange
+        let dataResponse, dataUrl, dataMethod, dataToken, dataError;
+        let userMock = [
+          {
+            "id": 1,
+            "name": "Leanne Graham",
+            "username": "Bret",
+            "email": "Sincere@april.biz",
+            "address": {
+              "street": "Kulas Light",
+              "suite": "Apt. 556",
+              "city": "Gwenborough",
+              "zipcode": "92998-3874",
+              "geo": {
+                "lat": "-37.3159",
+                "lng": "81.1496"
+              }
+            },
+            "phone": "1-770-736-8031 x56442",
+            "website": "hildegard.org",
+            "company": {
+              "name": "Romaguera-Crona",
+              "catchPhrase": "Multi-layered client-server neural-net",
+              "bs": "harness real-time e-markets"
+            }
+          },
+          {
+            "id": 2,
+            "name": "Ervin Howell",
+            "username": "Antonette",
+            "email": "Shanna@melissa.tv",
+            "address": {
+              "street": "Victor Plains",
+              "suite": "Suite 879",
+              "city": "Wisokyburgh",
+              "zipcode": "90566-7771",
+              "geo": {
+                "lat": "-43.9509",
+                "lng": "-34.4618"
+              }
+            },
+            "phone": "010-692-6593 x09125",
+            "website": "anastasia.net",
+            "company": {
+              "name": "Deckow-Crist",
+              "catchPhrase": "Proactive didactic contingency",
+              "bs": "synergize scalable supply-chains"
+            }
+          },
+          {
+            "id": 3,
+            "name": "Clementine Bauch",
+            "username": "Samantha",
+            "email": "Nathan@yesenia.net",
+            "address": {
+              "street": "Douglas Extension",
+              "suite": "Suite 847",
+              "city": "McKenziehaven",
+              "zipcode": "59590-4157",
+              "geo": {
+                "lat": "-68.6102",
+                "lng": "-47.0653"
+              }
+            },
+            "phone": "1-463-123-4447",
+            "website": "ramiro.info",
+            "company": {
+              "name": "Romaguera-Jacobson",
+              "catchPhrase": "Face to face bifurcated interface",
+              "bs": "e-enable strategic applications"
+            }
+          },
+        ]
+        let mockResponse = new ResponseOptions({body: JSON.stringify(userMock)});
+        mockBackend.connections.subscribe(connection =>{
+          dataUrl = connection.request.url;
+          dataMethod = connection.request.method;
+          dataToken = connection.request.headers.get('API-TOKEN');
+          connection.mockError(new Error('error'));
+        });
+
+        //Act
+        usersService.getAllUsers()
+        .subscribe(
+          response =>{// success
+            dataResponse = response;
+          },
+          error =>{error
+            dataError = error;
+          }
+        );
+        tick();
+
+        //Assert
+        expect(dataResponse).toBeUndefined();
+        expect(dataError).toBeDefined();
+
+      }))
+    );
+
+  });
+
+  describe('test for getUser', ()=>{
 
     it("should return the user's data with an id",
-      inject([UsersService, MockBackend], fakeAsync((usersService, mockBackend) => {
+      inject([UsersService, MockBackend], fakeAsync((usersService, mockBackend)=>{
 
-        // Arrange
-        let dataResponse;
-        let userMock = {
+        //Arrange
+        let dataResponse, dataUrl, dataMethod, dataToken;
+        let userMock ={
           "id": 1,
           "name": "Leanne Graham",
           "username": "Bret",
@@ -69,33 +278,94 @@ describe('UsersService', () => {
             "bs": "harness real-time e-markets"
           }
         }
-        mockBackend.connections.subscribe(connection => {
+        let mockResponse = new ResponseOptions({body: JSON.stringify(userMock)});
+        mockBackend.connections.subscribe(connection =>{
+          dataUrl = connection.request.url;
+          dataMethod = connection.request.method; // Parar probar el método con el que sale a internet
+          dataToken = connection.request.headers.get('API-TOKEN');
+          //expect(connection.request.url).toBe('http://jsonplaceholder.typicode.com/users/3');
+          connection.mockRespond(new Response(mockResponse));
+        });
 
-          let mockResponse = new ResponseOptions({ body: JSON.stringify(userMock) })
-          mockBackend.connections.subscribe(connection => {
-            expect(connection.request.url).toBe('http://jsonplaceholder.typicode.com/users/1');
-            connection.mockResponse(new Response(mockResponse));
-          });
+        //Act
+        usersService.getUser(3)
+        .subscribe(response =>{
+          dataResponse = response;
+        });
+        tick();
+        // Retorna las promesas que hayan o notifica a los observables que hayan y resolverlo con el mock configurado
+        console.log('token', dataToken);
 
-          // Act
-          usersService.getUser(1)
-            .subscribe(response => {
-              dataResponse = response
-            });
-          tick();// Retorna las promesas que hayan o notifica a los observables que hayan y resolverlo con el mock configurado
+        //Assert
+        expect(dataResponse.id).toBeDefined();
+        expect(dataResponse.name).toBeDefined();
+        expect(dataResponse.address).toBeDefined();
+        expect(dataUrl).toEqual('http://jsonplaceholder.typicode.com/users/3');
+        expect(dataMethod).toBe(RequestMethod.Get); // Verificar que cuando yo haga un POST se haga con el protocolo POST
+        expect(dataToken === null).toBeFalsy();
 
-          // Assert
-          expect(dataResponse.id).toBeDefined();
-          expect(dataResponse.name).toBeDefined();
-          expect(dataResponse.address).toBeDefined();
-        })
       }))
     );
+
+
+    it("should return the user's data when the server fail",
+      inject([UsersService, MockBackend], fakeAsync((usersService, mockBackend: MockBackend)=>{
+
+        //Arrange
+        let dataResponse, dataError;
+        let userMock ={
+          "id": 1,
+          "name": "Leanne Graham",
+          "username": "Bret",
+          "email": "Sincere@april.biz",
+          "address": {
+            "street": "Kulas Light",
+            "suite": "Apt. 556",
+            "city": "Gwenborough",
+            "zipcode": "92998-3874",
+            "geo": {
+              "lat": "-37.3159",
+              "lng": "81.1496"
+            }
+          },
+          "phone": "1-770-736-8031 x56442",
+          "website": "hildegard.org",
+          "company": {
+            "name": "Romaguera-Crona",
+            "catchPhrase": "Multi-layered client-server neural-net",
+            "bs": "harness real-time e-markets"
+          }
+        }
+        let mockResponse = new ResponseOptions({body: JSON.stringify(userMock)});
+        mockBackend.connections.subscribe(connection =>{
+          expect(connection.request.url).toBe('http://jsonplaceholder.typicode.com/users/3');
+          connection.mockError(new Error('error'));
+        });
+
+        //Act
+        usersService.getUser(3)
+        .subscribe(
+          response =>{// succcess
+            dataResponse = response;
+          },
+          error =>{ //error
+            dataError = error;
+          }
+        );
+        tick();
+
+        //Assert
+        expect(dataResponse).toBeUndefined();
+        expect(dataError).toBeDefined();
+
+      }))
+    );
+
   });
 
-  describe('test for createUser', () => {
+  describe('test for createUser',()=>{
 
-    it("should return an new user", inject([UsersService, MockBackend], fakeAsync((userService, mockBackend) => {
+    it("should return an new user",inject([UsersService, MockBackend], fakeAsync((userService, mockBackend)=>{
       //Arrange
       let dataResponse, dataError;
       let userMock = {
@@ -104,7 +374,7 @@ describe('UsersService', () => {
         "username": "Bret",
         "email": "Sincere@april.biz"
       };
-      let mockResponse = new ResponseOptions({ body: JSON.stringify(userMock) });
+      let mockResponse = new ResponseOptions({body: JSON.stringify(userMock)});
       mockBackend.connections.subscribe((connection) => {
         expect(connection.request.url).toBe('http://jsonplaceholder.typicode.com/users');
         connection.mockRespond(new Response(mockResponse));
@@ -116,15 +386,15 @@ describe('UsersService', () => {
         username: "Bret",
         email: "Sincere@april.biz"
       }
-      userService.createUser(newUser)
-        .subscribe(
-          response => { // success
-            dataResponse = response;
-          },
-          error => { //error
-            dataError = error;
-          }
-        );
+      userService.createUser( newUser )
+      .subscribe(
+        response => { // success
+          dataResponse = response;
+        },
+        error => { //error
+          dataError = error;
+        }
+      );
       tick();
 
       //Assert
@@ -133,11 +403,9 @@ describe('UsersService', () => {
       expect(dataResponse.name).toEqual('Leanne Graham');
       expect(dataResponse.username).toEqual('Bret');
       expect(dataResponse.email).toEqual('Sincere@april.biz');
+    })));
 
-    })
-    ));
-
-    it("should return an error when I create user", inject([UsersService, MockBackend], fakeAsync((userService, mockBackend) => {
+    it("should return an error when I create user",inject([UsersService, MockBackend], fakeAsync((userService, mockBackend)=>{
       //Arrange
       let dataResponse, dataError;
       let userMock = {
@@ -146,7 +414,7 @@ describe('UsersService', () => {
         "username": "Bret",
         "email": "Sincere@april.biz"
       };
-      let mockResponse = new ResponseOptions({ body: JSON.stringify(userMock) });
+      let mockResponse = new ResponseOptions({body: JSON.stringify(userMock)});
       mockBackend.connections.subscribe((connection) => {
         expect(connection.request.url).toBe('http://jsonplaceholder.typicode.com/users');
         connection.mockError(new Error('error'));
@@ -158,27 +426,27 @@ describe('UsersService', () => {
         username: "Bret",
         email: "Sincere@april.biz"
       }
-      userService.createUser(newUser)
-        .subscribe(
-          response => { // success
-            dataResponse = response;
-          },
-          error => { //error
-            dataError = error;
-          }
-        );
+      userService.createUser( newUser )
+      .subscribe(
+        response => { // success
+          dataResponse = response;
+        },
+        error => { //error
+          dataError = error;
+        }
+      );
       tick();
 
       //Assert
-      expect(dataError).toBeDefined();
+      expect(dataError).toBeDefined();  
       expect(dataResponse).toBeUndefined();
     })));
 
   });
 
-  describe('test for updateUser', () => {
+  describe('test for updateUser', ()=>{
 
-    it("should return an user updated", inject([UsersService, MockBackend], fakeAsync((userService, mockBackend) => {
+    it("should return an user updated",inject([UsersService, MockBackend], fakeAsync((userService, mockBackend)=>{
 
       //Arrange
       let dataResponse, dataError;
@@ -188,7 +456,7 @@ describe('UsersService', () => {
         "username": "Bret",
         "email": "Sincere@april.biz"
       };
-      let mockResponse = new ResponseOptions({ body: JSON.stringify(userMock) });
+      let mockResponse = new ResponseOptions({body: JSON.stringify(userMock)});
       mockBackend.connections.subscribe((connection) => {
         expect(connection.request.url).toBe('http://jsonplaceholder.typicode.com/users/12');
         connection.mockRespond(new Response(mockResponse));
@@ -202,14 +470,14 @@ describe('UsersService', () => {
         email: "Sincere@april.biz"
       }
       userService.updateUser(user)
-        .subscribe(
-          response => { // success
-            dataResponse = response;
-          },
-          error => { //error
-            dataError = error;
-          }
-        );
+      .subscribe(
+        response => { // success
+          dataResponse = response;
+        },
+        error => { //error
+          dataError = error;
+        }
+      );
       tick();
 
       //Assert
@@ -218,7 +486,7 @@ describe('UsersService', () => {
 
     })));
 
-    it("should return an error when I updated", inject([UsersService, MockBackend], fakeAsync((userService, mockBackend) => {
+    it("should return an error when I updated",inject([UsersService, MockBackend], fakeAsync((userService, mockBackend)=>{
 
       //Arrange
       let dataResponse, dataError;
@@ -228,7 +496,7 @@ describe('UsersService', () => {
         "username": "Bret",
         "email": "Sincere@april.biz"
       };
-      let mockResponse = new ResponseOptions({ body: JSON.stringify(userMock) });
+      let mockResponse = new ResponseOptions({body: JSON.stringify(userMock)});
       mockBackend.connections.subscribe((connection) => {
         expect(connection.request.url).toBe('http://jsonplaceholder.typicode.com/users/12');
         connection.mockError(new Error('error'));
@@ -242,14 +510,14 @@ describe('UsersService', () => {
         email: "Sincere@april.biz"
       }
       userService.updateUser(user)
-        .subscribe(
-          response => { // success
-            dataResponse = response;
-          },
-          error => { //error
-            dataError = error;
-          }
-        );
+      .subscribe(
+        response => { // success
+          dataResponse = response;
+        },
+        error => { //error
+          dataError = error;
+        }
+      );
       tick();
 
       //Assert
@@ -316,5 +584,4 @@ describe('UsersService', () => {
     })))
 
   })
-
 });

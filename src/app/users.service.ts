@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers } from '@angular/http';
 import { Observable } from 'rxjs/';
 import { map } from 'rxjs/operators';
 
@@ -12,8 +12,14 @@ export class UsersService {
 
   constructor(private http: Http) { }
 
+  getAllUsers(){
+    return this.http.get(`${this.path}`, this.makeOptions())
+    .pipe(map(response => response.json()));
+  }
+
   getUser(id: number): Observable<any> {
-    return this.http.get(`${this.path}/${id}`).pipe(map(response => response.json()));
+    return this.http.get(`${this.path}/${id}`, this.makeOptions())
+    .pipe(map(response => response.json()));
 
   }
 
@@ -35,7 +41,7 @@ export class UsersService {
       .pipe(map(response => response.json()));
   }
 
-  makeOptions() {
+  makeOptions() { // Necesita módulo de Headers importado
     let headers = new Headers();
     headers.append('API-TOKEN', 'xxxx7777ywewe');
     return {
