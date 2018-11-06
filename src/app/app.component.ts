@@ -17,11 +17,11 @@ export class AppComponent {
   }
   ngOnInit() {
     this.person = new Person(
-      'sdf',
-      'asdfasd',
-      34,
-      34,
-      1.89
+      'Zulema',
+      'Vicente',
+      22,
+      2,
+      12
     );
 /*     let calculator = new Calculator();
     let result = calculator.multiply(3,3);

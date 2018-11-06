@@ -5,12 +5,16 @@ import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UsersService } from './users.service';
-import { PersonRowComponent } from './person-row/person-row.component'
+import { PersonRowComponent } from './person-row/person-row.component';
+import { UserRowComponent } from './user-row/user-row.component';
+import { UserListComponent } from './user-list/user-list.component'
 
 @NgModule({
   declarations: [
     AppComponent,
-    PersonRowComponent
+    PersonRowComponent,
+    UserRowComponent,
+    UserListComponent
   ],
   imports: [
     BrowserModule,
