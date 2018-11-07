@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { UsersService } from './../users.service';
 import { User } from '../user';
+
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -10,9 +12,9 @@ export class UserListComponent implements OnInit {
 
   // user: User;
   users: User[] = [];
-  selectedUser: User;
+  selectedUser: User | any = {};
 
-  constructor() { 
+  constructor( private usersService: UsersService ) { 
 /*     this.user = new User(
       'valentina',
       'valentina@gmail.com'
@@ -39,12 +41,27 @@ export class UserListComponent implements OnInit {
       new User('zulema','zulema@gmail.com','234234'),
       new User('nancy','nancy@gmail.com','23434234')
     ]
+    this.selectedUser = this.users[0];
   }
 
   ngOnInit() {
+    this.usersService.getAllUsers()
+    .subscribe(data => {
+      console.log(data);
+      this.users = data;
+      this.selectedUser = this.users[0];
+    });
   }
 
   selected(user: User){
     this.selectedUser = user;
+  }
+
+  getUser(idUser) {
+    this.usersService.getUser(idUser)
+    .subscribe(user => {
+      this.users[0] = user;
+      this.selectedUser = user;
+    })
   }
 }

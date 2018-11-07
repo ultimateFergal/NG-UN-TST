@@ -2,6 +2,10 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { PersonRowComponent } from './person-row/person-row.component';
+import { UserListComponent } from './user-list/user-list.component';
+import { UserRowComponent } from './user-row/user-row.component';
+import { UsersService } from './users.service';
+import { MockUsersService } from './users.service.mock';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -10,8 +14,9 @@ describe('AppComponent', () => {
         RouterTestingModule
       ],
       declarations: [
-        AppComponent, PersonRowComponent
+        AppComponent, PersonRowComponent, UserListComponent, UserRowComponent
       ],
+      providers: [{ provide: UsersService, useClass: MockUsersService}]
     }).compileComponents();
   }));
 
